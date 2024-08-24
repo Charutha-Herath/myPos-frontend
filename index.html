@@ -157,11 +157,11 @@
                         <div class=" text-start">
                             <label for="password" class="form-label">Password :</label>
                             <input type="password" class="form-control" id="password">
-                        </div>
-                        <div class="mb-4 form-check text-start">
+                        </div> <br>
+                        <!--<div class="mb-4 form-check text-start">
                             <input type="checkbox" class="form-check-input" id="showPassword">
                             <label class="form-check-label" for="showPassword">Show password</label>
-                        </div>
+                        </div>-->
                         <button type="submit" id="loginBtn" class="btn mb-4 w-100 text-light" style="background-color: #008dff">Login</button>
                         <p>If you don't have an account?<a id="signUpBtn" href="#">Sign up</a></p>
                     </form>
@@ -647,7 +647,7 @@
 
 
 
-        $('#loginBtn').on('click', () => {
+        /*$('#loginBtn').on('click', () => {
 
             const loadingScreen = document.querySelector('#sign_up_page');
             loadingScreen.style.display = 'none';
@@ -669,7 +669,7 @@
 
             const loadingScreen6 = document.querySelector('#sec-main-place-order');
             loadingScreen6.style.display = 'none';
-        });
+        });*/
 
     });
 
@@ -710,6 +710,7 @@
 <script type="module" src="mvc/controller/itemController.js"></script>
 <script type="module" src="mvc/controller/placeOrderController.js"></script>
 <script type="module" src="mvc/controller/orderDetailsController.js"></script>
+<script type="module" src="mvc/controller/userController.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
