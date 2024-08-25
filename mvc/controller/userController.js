@@ -22,3 +22,21 @@ login.eq(0).on('click',function (){
     console.log("login details : ",userNameValue,"   ",userPasswordValue)
    userApi.getUser(userNameValue,userPasswordValue);
 });
+
+
+signUpBtn.eq(0).on('click', function (){
+    console.log("signup function");
+    let nameValue = name.val();
+    let emailValue = email.val();
+    let passwordValue = password.val();
+    let confirm_passwordValue = confirm_password.val();
+
+    console.log(nameValue,"  ",emailValue, " ",passwordValue)
+
+    if(passwordValue === confirm_passwordValue){
+        let userModel = new UserModel(nameValue,emailValue,passwordValue);
+        userApi.saveUser(userModel);
+    }else {
+        alert("Enter same password")
+    }
+});

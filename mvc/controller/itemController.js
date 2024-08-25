@@ -1,6 +1,8 @@
 import {item_db} from "../db/db.js";
 import {ItemModel} from "../model/itemModel.js";
+import{ItemApi} from "../api/itemApi.js";
 
+let itemApi = new ItemApi();
 
 let submit = $('#btn-item-add').eq(0);
 let update_btn = $('#btn-item-update').eq(0);
@@ -27,7 +29,15 @@ $('#nav-store').on('click', function() {
 
 
 function generateItemCode() {
-    let highestItemCode = 0;
+
+    itemApi.generateItemCode().then((code) => {
+        itemCode.val(code);
+    }).catch((error) => {
+        showError('Fetching Error', 'Error generating item CODE');
+        console.error('Error generating item CODE:', error);
+    });
+
+    /*let highestItemCode = 0;
 
     for (let i = 0; i < item_db.length; i++) {
         // Extract the numeric part of the item code
@@ -40,9 +50,13 @@ function generateItemCode() {
     }
 
     // Increment the highest numeric part and format as "item-XXX"
-    return `item-${String(highestItemCode + 1).padStart(3, '0')}`;
+    return `item-${String(highestItemCode + 1).padStart(3, '0')}`;*/
 
 }
+
+
+
+
 
 submit.on('click', (e) => {
 
@@ -56,29 +70,34 @@ submit.on('click', (e) => {
 
 
         if(
-        validation(itemNameValue, "item name", itemNamePattern.test(itemNameValue)) &&
-        validation(priceValue, "Price", null) &&
-        validation(qtyOnHandValue, "Qty On Hand",null)){
-        let item = new ItemModel(
-            itemCodeValue,
-            itemNameValue,
-            priceValue,
-            qtyOnHandValue,
-            "n"
-        );
+            validation(itemNameValue, "item name", itemNamePattern.test(itemNameValue)) &&
+            validation(priceValue, "Price", null) &&
+            validation(qtyOnHandValue, "Qty On Hand",null)){
+                let item = new ItemModel(
+                    itemCodeValue,
+                    itemNameValue,
+                    priceValue,
+                    qtyOnHandValue,
+                    "n"
+                );
 
-        Swal.fire(
-            'Save Successfully!',
-            'Successful',
-            'success'
-        );
+                console.log("Item : ",item)
 
-        item_db.push(item);
+                    let v = itemApi.saveItem(item);
+                    console.log("Response yakoo : ",v)
 
-        populateItemTable();
+                Swal.fire(
+                    'Save Successfully!',
+                    'Successful',
+                    'success'
+                );
 
-        resetColumns();
-    }
+                //item_db.push(item);
+
+                populateItemTable();
+
+                resetColumns();
+            }
 
 });
 
@@ -108,7 +127,36 @@ function showValidationError(title, text) {
 
 
 function populateItemTable(){
-    $('tbody').eq(1).empty();
+
+    itemApi.getAllItem().then((itemDb) => {
+        // Log the response to check its structure
+        console.log("Response from getAllItem:", itemDb);
+
+        // Ensure itemDb is an array
+        if (Array.isArray(itemDb)) {
+            $('#item-table-body').eq(0).empty();
+            itemDb.forEach((item) => {
+                $('#item-table-body').eq(0).append(
+                    `<tr>
+                        <th row="span">${item.itemCode}</th>
+                        <td>${item.description}</td>
+                        <td>${item.price}</td>
+                        <td>${item.qty}</td>
+                        
+                    </tr>`
+                );
+            });
+        } else {
+            console.error("Invalid response format. Expected an array.");
+            showError('Invalid Response', 'Unexpected data format from server.');
+        }
+    }).catch((error) => {
+        console.log(error);
+        showError('fetch Unsuccessful', error);
+    });
+
+
+    /*$('tbody').eq(1).empty();
     item_db.map((item) => {
         $('tbody').eq(1).append(
             `<tr>
@@ -118,7 +166,7 @@ function populateItemTable(){
                 <td>${item.qty_on_hand}</td>
             </tr>`
         );
-    });
+    });*/
 }
 
 function resetColumns() {

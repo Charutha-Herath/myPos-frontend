@@ -197,7 +197,7 @@
                             <label for="password2" class="form-label">Confirm Password :</label>
                             <input type="password" class="form-control" id="password2">
                         </div>
-                        <button type="button" id="signUp" class="btn mb-4 w-100 text-light" style="background-color: #1e3050">Sign up</button>
+                        <button type="button" id="signUp" class="btn mb-4 w-100 text-light" style="background-color:#008dff">Sign up</button>
                         <p>Already have an account?<a id="signInBtn" href="#">Sign in</a></p>
 
                     </form>
@@ -444,7 +444,7 @@
                     <th scope="col">Qty on Hand</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="item-table-body">
                 <!--<tr>
                     <th scope="row">1</th>
                     <td>Red rice</td>
@@ -644,6 +644,30 @@
             loadingScreen6.style.display = 'none';
         });
 
+        $('#signInBtn').on('click', () => {
+
+            const loadingScreen = document.querySelector('#sign_up_page');
+            loadingScreen.style.display = 'none';
+
+            const loadingScreen1 = document.querySelector('#login_page');
+            loadingScreen1.style.display = 'block';
+
+            const loadingScreen2 = document.querySelector('#header-nav');
+            loadingScreen2.style.display = 'none';
+
+            const loadingScreen3 = document.querySelector('#sec-main-customer');
+            loadingScreen3.style.display = 'none';
+
+            const loadingScreen4 = document.querySelector('#sec-main-home');
+            loadingScreen4.style.display = 'none';
+
+            const loadingScreen5 = document.querySelector('#sec-main-store');
+            loadingScreen5.style.display = 'none';
+
+            const loadingScreen6 = document.querySelector('#sec-main-place-order');
+            loadingScreen6.style.display = 'none';
+        });
+
 
 
 
@@ -682,16 +706,16 @@
         loadingScreen.style.display = 'none';
 
         const loadingScreen1 = document.querySelector('#login_page');
-        loadingScreen1.style.display = 'block';
+        loadingScreen1.style.display = 'none';
 
         const loadingScreen2 = document.querySelector('#header-nav');
-        loadingScreen2.style.display = 'none';
+        loadingScreen2.style.display = 'block';
 
         const loadingScreen3 = document.querySelector('#sec-main-customer');
         loadingScreen3.style.display = 'none';
 
         const loadingScreen4 = document.querySelector('#sec-main-home');
-        loadingScreen4.style.display = 'none';
+        loadingScreen4.style.display = 'block';
 
         const loadingScreen5 = document.querySelector('#sec-main-store');
         loadingScreen5.style.display = 'none';
