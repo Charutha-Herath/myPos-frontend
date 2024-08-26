@@ -2,7 +2,7 @@ export class ItemApi{
 
     getAllItem(){
         return $.ajax({
-            url: "http://localhost:8080/item",
+            url: "http://localhost:8080/pos/item",
             type:"GET",
             data: {
                 action: 'getAllItem',
@@ -15,7 +15,7 @@ export class ItemApi{
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/item",
+                url: "http://localhost:8080/pos/item",
                 data:{
                     action: 'generateItemCode'
                 },
@@ -38,7 +38,7 @@ export class ItemApi{
 
             const sendAjax = (customerJson)=>{
                 $.ajax({
-                    url: "http://localhost:8080/item",
+                    url: "http://localhost:8080/pos/item",
                     type: "POST",
                     data: itemJson,
                     contentType: "application/json",
@@ -58,7 +58,7 @@ export class ItemApi{
 
             const sendAjax = (itemJson)=>{
                 $.ajax({
-                    url:"http://localhost:8080/item",
+                    url:"http://localhost:8080/pos/item",
                     type:"PUT",
                     data: itemJson,
                     contentType: "application/json",
@@ -76,7 +76,7 @@ export class ItemApi{
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: "DELETE",
-                url: "http://localhost:8080/item?itemCode="+code,
+                url: "http://localhost:8080/pos/item?itemCode="+code,
                 success: function(responseText) {
                     console.log("trigger ajax");
                     resolve(responseText);

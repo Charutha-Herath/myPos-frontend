@@ -6,7 +6,7 @@ export class UserApi{
         if (userName) {
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8080/user',
+                url: 'http://localhost:8080/pos/user',
                 data: {
                     action: 'checkUser',
                     userName: userName
@@ -67,7 +67,7 @@ export class UserApi{
         console.log("Save user before ajax")
         const sendAjax = (userJSON) =>{
             $.ajax({
-                url:"http://localhost:8080/user",
+                url:"http://localhost:8080/pos/user",
                 type: "POST",
                 data: userJSON,
                 contentType: "application/json",
