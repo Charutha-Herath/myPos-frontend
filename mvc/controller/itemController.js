@@ -209,29 +209,51 @@ $('#itemTable').on('click', 'tbody tr', function() {
 update_btn.on('click', () => {
 
     let itemCodeValue = itemCode.val();
-    let itemNameValue = itemName.val().trim();
+    let descriptionValue = itemName.val().trim();
     let priceValue = price.val().trim();
     let qtyOnHandValue = qtyOnHand.val().trim();
 
+
+
     if(
-        validation(itemNameValue, "item name", null) &&
+        validation(descriptionValue, "item name", null) &&
         validation(priceValue, "Price", null) &&
         validation(qtyOnHandValue, "Qty On Hand",null)){
 
-        item_db.map((item) => {
+        let itemModel = new ItemModel(
+            itemCodeValue,
+            descriptionValue,
+            priceValue,
+            qtyOnHandValue
+        );
+
+
+        itemApi.updateItem(itemModel).then((responseText)=>{
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated Successfully',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            populateItemTable();
+            resetColumns();
+            //clearInputs();
+        });
+
+        /*item_db.map((item) => {
             if (item.item_code === itemCodeValue) {
                 item.item_name = itemNameValue;
                 item.price = priceValue;
                 item.qty_on_hand = qtyOnHandValue;
             }
 
-        });
+        });*/
 
-        Swal.fire(
+        /*Swal.fire(
             'Update Successfully !',
             'Successful',
             'success'
-        )
+        )*/
 
         populateItemTable();
 
@@ -255,8 +277,12 @@ delete_btn.on('click', () => {
         confirmButtonText: 'Delete'
     }).then((result) => {
         if (result.isConfirmed) {
-            let index = item_db.findIndex(item => item.item_code === itemCodeValue);
-            item_db.splice(index, 1);
+            /*let index = item_db.findIndex(item => item.item_code === itemCodeValue);
+            item_db.splice(index, 1);*/
+
+            itemApi.deleteItem(itemCodeValue)
+
+
             populateItemTable();
             resetColumns();
             Swal.fire(

@@ -52,4 +52,40 @@ export class ItemApi{
         });
     }
 
+    updateItem(item){
+        return new Promise((resolve,reject)=>{
+            let itemJson = JSON.stringify(item);
+
+            const sendAjax = (itemJson)=>{
+                $.ajax({
+                    url:"http://localhost:8080/item",
+                    type:"PUT",
+                    data: itemJson,
+                    contentType: "application/json",
+                    success: function (responseText){
+                        resolve(responseText);
+                    }
+                })
+            }
+            console.log("item update call");
+            sendAjax(itemJson);
+        })
+    }
+
+    deleteItem(code){
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "DELETE",
+                url: "http://localhost:8080/item?itemCode="+code,
+                success: function(responseText) {
+                    console.log("trigger ajax");
+                    resolve(responseText);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    reject(new Error(`AJAX request failed with status ${jqXHR.status}`));
+                }
+            });
+        });
+    }
+
 }
