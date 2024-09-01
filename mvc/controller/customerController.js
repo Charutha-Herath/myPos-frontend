@@ -1,5 +1,8 @@
 import {customer_db} from "../db/db.js";
 import {CustomerModel} from "../model/customerModel.js";
+import {CustomerApi} from "../api/customerApi.js";
+
+let customerApi = new CustomerApi();
 
 let submit = $('#btn-customer-add').eq(0);
 let update_btn = $('#btn-customer-update').eq(0);
@@ -22,6 +25,7 @@ const mobilePattern = new RegExp("^(?:0|94|\\+94|0094)?(?:(11|21|23|24|25|26|27|
 
 $('#nav-customer').on('click', function() {
     customer_id.val(generateCustomerId());
+    //generateCustomerId();
     populateCustomerTable();
     delete_btn.prop("disabled", true);
     update_btn.prop("disabled", true);
@@ -29,7 +33,14 @@ $('#nav-customer').on('click', function() {
 });
 
 function generateCustomerId() {
-    let highestCustId = 0;
+
+    customerApi.generateCustomerId().then((code) => {
+        customer_id.val(code);
+    }).catch((error) => {
+        showError('Fetching Error', 'Error generating item CODE');
+        console.error('Error generating item CODE:', error);
+    });
+    /*let highestCustId = 0;
 
     for (let i = 0; i < customer_db.length; i++) {
         // Extract the numeric part of the item code
@@ -42,7 +53,7 @@ function generateCustomerId() {
     }
 
     // Increment the highest numeric part and format as "item-XXX"
-    return `cust-${String(highestCustId + 1).padStart(3, '0')}`;
+    return `cust-${String(highestCustId + 1).padStart(3, '0')}`;*/
 }
 
 function resetColumns() {
@@ -109,24 +120,6 @@ submit.on('click', (e) => {
             contactValue
 
         );
-
-
-        /*let newCustomer = JSON.stringify(customer);
-
-
-
-        $.ajax({
-            url:"http://localhost:8080/page/customer",
-            type:"POST",
-            data:newCustomer,
-            headers:{"Content-Type":"application/json"},
-            success: (res) =>{
-                console.log(JSON.stringify(res))
-            },
-            error: (err)=>{
-                console.error(err)
-            }
-        });*/
 
         Swal.fire(
             'Save Successfully!',
