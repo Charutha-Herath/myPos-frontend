@@ -58,7 +58,7 @@ function generateCustomerId() {
 
 function resetColumns() {
     reset.click();
-    customer_id.val(generateCustomerId());
+    //customer_id.val(generateCustomerId());
     delete_btn.prop("disabled", true);
     update_btn.prop("disabled", true);
     submit.prop("disabled",false);
@@ -137,7 +137,37 @@ submit.on('click', (e) => {
 });
 
 function populateCustomerTable(){
-    $('tbody').eq(3).empty();
+
+    customerApi.getAllCustomer().then((customerDb) => {
+        // Log the response to check its structure
+        console.log("Response from getAllCustomer:", customerDb);
+
+        // Ensure itemDb is an array
+        if (Array.isArray(customerDb)) {
+            $('#customer-table-body').eq(0).empty();
+            customerDb.forEach((customer) => {
+                $('#customer-table-body').eq(0).append(
+                    `<tr>
+                        <th scope="row">${customer.customerId}</th>
+                        <td>${customer.customerName}</td>
+                        <td>${customer.contact}</td>
+                        <td>${customer.address}</td>
+                        
+                    </tr>`
+                );
+            });
+        } else {
+            console.error("Invalid response format. Expected an array.");
+            showError('Invalid Response', 'Unexpected data format from server.');
+        }
+    }).catch((error) => {
+        console.log(error);
+        showError('fetch Unsuccessful', error);
+    });
+
+
+
+/*    $('tbody').eq(3).empty();
     customer_db.map((customer) => {
         $('tbody').eq(3).append(
             `<tr>
@@ -147,7 +177,7 @@ function populateCustomerTable(){
                 <td>${customer.contact}</td>
             </tr>`
         );
-    });
+    });*/
 }
 
 $('#customerTable').on('click', 'tbody tr', function() {

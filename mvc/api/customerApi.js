@@ -19,4 +19,15 @@ export class CustomerApi{
             });
         });
     }
+
+    getAllCustomer(){
+        return $.ajax({
+            url: "http://localhost:8080/pos/customer",
+            type:"GET",
+            data: {
+                action: 'getAllCustomer',
+            },
+            contentType: "application/json"
+        });
+    }
 }
