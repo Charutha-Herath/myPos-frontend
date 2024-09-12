@@ -1,5 +1,6 @@
 import {item_db} from "../db/db.js";
 import {ItemModel} from "../model/itemModel.js";
+import{PlaceOrderApi} from "../api/placeOrderApi.js";
 
 import {customer_db} from "../db/db.js";
 import {CustomerModel} from "../model/customerModel.js";
@@ -9,6 +10,9 @@ import {OrderModel} from "../model/placeOrderModel.js";
 
 import {order_details_db} from "../db/db.js";
 import {orderModel} from "../model/orderDetailsModel.js";
+
+
+let placeOrderApi = new PlaceOrderApi();
 
 let customerIdCB = $('#order_customer_id');
 let orderId=$('#order_id');
@@ -79,20 +83,50 @@ function populateItemIDs() {
     // Clear existing options except the default one
     itemIdCB.find("option:not(:first-child)").remove();
 
+    placeOrderApi.getAllItemCodes().then(function(array) {
+        // Iterate through the array and add options to the select element
+        for (let i = 0; i < array.length; i++) {
+            itemIdCB.append($("<option>", {
+                value: array[i],  // No need for array[i].item_code since it's just an ID array
+                text: array[i]
+            }));
+        }
+    }).catch(function(err) {
+        console.error("Error retrieving item codes:", err);
+    });
+
+    /*let array = placeOrderApi.getAllItemCodes()
+
     // Iterate through the customerArray and add options to the select element
-    for (let i = 0; i < item_db.length; i++) {
+    for (let i = 0; i < array.length; i++) {
         itemIdCB.append($("<option>", {
-            value: item_db[i].item_code,
-            text: item_db[i].item_code
+            value: array[i].item_code,
+            text: array[i].item_code
         }));
-    }
+    }*/
 }
 
 
 function populateCustomerIDs() {
 
-    // Clear existing options except the default one
     customerIdCB.find("option:not(:first-child)").remove();
+
+    placeOrderApi.getAllCustomerIds().then(function(array) {
+
+        for (let i = 0; i < array.length; i++) {
+            customerIdCB.append($("<option>", {
+                value: array[i],
+                text: array[i]
+            }));
+        }
+    }).catch(function(err) {
+        console.error("Error retrieving item codes:", err);
+    });
+
+
+    // Clear existing options except the default one
+
+    /*customerIdCB.find("option:not(:first-child)").remove();
 
     // Iterate through the customerArray and add options to the select element
     for (let i = 0; i < customer_db.length; i++) {
@@ -100,7 +134,7 @@ function populateCustomerIDs() {
             value: customer_db[i].customer_id,
             text: customer_db[i].customer_id
         }));
-    }
+    }*/
 }
 
 add.on("click", function () {
@@ -205,7 +239,25 @@ itemIdCB.on("change", function() {
     // Capture the selected value in a variable
     let selectedValue = $(this).val();
 
-    let itemObj = $.grep(item_db, function(item) {
+    //console.log("getItemDetails : ",placeOrderApi.getItemDetails(selectedValue))
+
+    placeOrderApi.getItemDetails(selectedValue).then((item)=>{
+
+        console.log("Innnnn")
+        console.log("item code : ",item.itemCode)
+        if (selectedValue===item.itemCode){
+            console.log("if innn")
+            console.log("Adooo : ",item.description)
+            itemName.val(item.description );
+            qtyOnHand.val(item.qty);
+            price.val(item.price);
+
+            updateBtn2.prop("disabled", true);
+            removeBtn2.prop("disabled",true);
+            add.prop("disabled", false);
+        }
+    })
+    /*let itemObj = $.grep(item_db, function(item) {
         return item.item_code === selectedValue;
     });
 
@@ -214,31 +266,48 @@ itemIdCB.on("change", function() {
         itemName.val(itemObj[0].item_name); // Assuming there is an 'item_name' property
         price.val(itemObj[0].price);
         qtyOnHand.val(itemObj[0].qty_on_hand);
-    }
+    }*/
 
     // Check if the item is already in the items array
-    let existingItem = items.find(item => item.itemCode === selectedValue);
+    //let existingItem = items.find(item => item.itemCode === selectedValue);
 
-    if (existingItem) {
+    /*if (existingItem) {
         updateBtn2.prop("disabled", false);
         removeBtn2.prop("disabled",false);
         add.prop("disabled", true);
         qty.val(existingItem.qtyValue);
-    }
+    }*/
 });
 
 customerIdCB.on("change", function() {
     // Capture the selected value in a variable
     let selectedValue = $(this).val();
 
-    let customerObj = $.grep(customer_db, function(customer) {
+    placeOrderApi.getCustomerDetails(selectedValue).then((customer)=>{
+
+        console.log("Innnnn")
+        console.log("Customer code : ",customer.customerName)
+        if (selectedValue===customer.customerId){
+            /*console.log("if innn")
+            console.log("Adooo : ",customer.description)*/
+            customerName.val(customer.customerName );
+            //qtyOnHand.val(customer.qty);
+            //price.val(customer.price);
+
+            updateBtn2.prop("disabled", true);
+            removeBtn2.prop("disabled",true);
+            add.prop("disabled", false);
+        }
+    })
+
+    /*let customerObj = $.grep(customer_db, function(customer) {
         return customer.customer_id === selectedValue;
     });
 
     if (customerObj.length > 0) {
         // Access the first element in the filtered array
         customerName.val(customerObj[0].name);
-    }
+    }*/
 });
 
 $('#item-order-table').on('click', 'tbody tr', function() {
