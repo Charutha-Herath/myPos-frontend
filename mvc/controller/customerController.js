@@ -121,6 +121,9 @@ submit.on('click', (e) => {
 
         );
 
+        let v = customerApi.saveCustomer(customer);
+        console.log("Response yakoo : ",v)
+
         Swal.fire(
             'Save Successfully!',
             'Successful',
@@ -183,9 +186,10 @@ function populateCustomerTable(){
 $('#customerTable').on('click', 'tbody tr', function() {
     let customerIdValue = $(this).find('th').text();
     let nameValue = $(this).find('td:eq(0)').text();
-    let addressValue = $(this).find('td:eq(1)').text();
-    let contactValue = $(this).find('td:eq(2)').text();
+    let contactValue = $(this).find('td:eq(1)').text();
+    let addressValue = $(this).find('td:eq(2)').text();
 
+    console.log("customer table details : ",contactValue," ",nameValue," ",addressValue," ",contactValue);
 
     customer_id.val(customerIdValue);
     name.val(nameValue);
@@ -207,28 +211,45 @@ update_btn.on('click', () => {
     let contactValue = contact.val().trim();
 
 
-    if(
-        validation(nameValue, "customer name", null) &&
+    if( validation(nameValue, "customer name", null) &&
         validation(addressValue, "Address", null) &&
         validation(contactValue, "Contact", mobilePattern.test(contactValue))) {
 
-        customer_db.map((customer) => {
+        let customerModel = new CustomerModel(
+            customerIdValue,
+            nameValue,
+            addressValue,
+            contactValue
+        );
+
+        customerApi.updateCustomer(customerModel).then((responseText)=>{
+            Swal.fire({
+                icon: 'success',
+                title: 'Customer Updated Successful',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            populateCustomerTable();
+            resetColumns();
+        });
+
+        /*customer_db.map((customer) => {
             if (customer.customer_id === customerIdValue) {
                 customer.name = nameValue;
                 customer.address = addressValue;
                 customer.contact = contactValue;
             }
-        });
+        });*/
 
-        Swal.fire(
+       /* Swal.fire(
             'Update Successfully !',
             'Successful',
             'success'
-        )
+        )*/
 
-        populateCustomerTable();
+       /* populateCustomerTable();
 
-        resetColumns();
+        resetColumns();*/
 
     }
 
@@ -239,7 +260,8 @@ update_btn.on('click', () => {
 });*/
 delete_btn.on('click', () => {
 
-    let customerIdValue = parseInt(customer_id.val(), 10);
+    //let customerIdValue = parseInt(customer_id.val(), 10);
+    let customerIdValue = customer_id.val();
 
     Swal.fire({
         title: 'Are you sure?',
@@ -251,15 +273,21 @@ delete_btn.on('click', () => {
         confirmButtonText: 'Delete'
     }).then((result) => {
         if (result.isConfirmed) {
-            let index = customer_db.findIndex(customer => customer.customer_id === customerIdValue);
-            customer_db.splice(index, 1);
-            populateCustomerTable();
-            resetColumns();
-            Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-            )
+            customerApi.deleteCustomer(customerIdValue)
+                .then((responseText) => {
+                    console.log("awaa...");
+                    Swal.fire(
+                        'Delete Customer',
+                        'Successful',
+                        'success'
+                    );
+                    populateCustomerTable();
+                    resetColumns();
+                })
+                .catch((error) => {
+                    console.log(error);
+                    showError('Student delete Unsuccessful', error);
+                });
         }
     });
 
